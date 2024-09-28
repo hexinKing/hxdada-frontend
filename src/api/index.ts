@@ -4,6 +4,7 @@
 // API 唯一标识：
 import * as wxMpController from './wxMpController';
 import * as appController from './appController';
+import * as appStatisticController from './appStatisticController';
 import * as fileController from './fileController';
 import * as questionController from './questionController';
 import * as reviewController from './reviewController';
@@ -13,6 +14,7 @@ import * as userAnswerController from './userAnswerController';
 export default {
   wxMpController,
   appController,
+  appStatisticController,
   fileController,
   questionController,
   reviewController,

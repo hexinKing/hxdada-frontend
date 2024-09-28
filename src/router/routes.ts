@@ -18,6 +18,9 @@ import DoAnswerPage from "@/views/answer/DoAnswerPage.vue";
 import AnswerResultPage from "@/views/answer/AnswerResultPage.vue";
 import MyAnswerPage from "@/views/answer/MyAnswerPage.vue";
 import UserInfoView from "@/views/user/UserInfoView.vue";
+import AppStatisticPage from "@/views/statistic/AppStatisticPage.vue";
+import UserProfile from "@/views/user/UserProfile.vue";
+import AppStatisticPage2 from "@/views/statistic/AppStatisticPage2.vue";
 
 export const routes: Array<RouteRecordRaw> = [
   {
@@ -132,6 +135,22 @@ export const routes: Array<RouteRecordRaw> = [
     component: AdminUserAnswerPage,
     meta: {
       access: ACCESS_ENUM.ADMIN,
+    },
+  },
+  {
+    path: "/app_statistic",
+    name: "应用统计",
+    component: AppStatisticPage,
+    meta: {
+      access: ACCESS_ENUM.ADMIN,
+    },
+  },
+  {
+    path: "/personal",
+    name: "个人信息",
+    component: UserProfile,
+    meta: {
+      access: ACCESS_ENUM.USER,
     },
   },
   {
