@@ -146,14 +146,6 @@ export const routes: Array<RouteRecordRaw> = [
     },
   },
   {
-    path: "/personal",
-    name: "个人信息",
-    component: UserProfile,
-    meta: {
-      access: ACCESS_ENUM.USER,
-    },
-  },
-  {
     path: "/noAuth",
     name: "无权限",
     component: NoAuthPage,
