@@ -17,10 +17,8 @@ import AddScoringResultPage from "@/views/add/AddScoringResultPage.vue";
 import DoAnswerPage from "@/views/answer/DoAnswerPage.vue";
 import AnswerResultPage from "@/views/answer/AnswerResultPage.vue";
 import MyAnswerPage from "@/views/answer/MyAnswerPage.vue";
-import UserInfoView from "@/views/user/UserInfoView.vue";
 import AppStatisticPage from "@/views/statistic/AppStatisticPage.vue";
-import UserProfile from "@/views/user/UserProfile.vue";
-import AppStatisticPage2 from "@/views/statistic/AppStatisticPage2.vue";
+import UserPage from "@/views/user/UserPage.vue";
 
 export const routes: Array<RouteRecordRaw> = [
   {
@@ -93,6 +91,14 @@ export const routes: Array<RouteRecordRaw> = [
     path: "/answer/my",
     name: "我的答题",
     component: MyAnswerPage,
+    meta: {
+      access: ACCESS_ENUM.USER,
+    },
+  },
+  {
+    path: "/personal",
+    name: "个人信息",
+    component: UserPage,
     meta: {
       access: ACCESS_ENUM.USER,
     },

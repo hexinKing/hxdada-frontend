@@ -25,6 +25,7 @@
       </a-button>
     </a-form-item>
   </a-form>
+
   <a-table
     :columns="columns"
     :data="dataList"
@@ -47,10 +48,38 @@
     </template>
     <template #optional="{ record }">
       <a-space>
+        <a-button @click="openEditModal(record)">修改</a-button>
         <a-button status="danger" @click="doDelete(record)">删除</a-button>
       </a-space>
     </template>
   </a-table>
+
+  <!-- 修改用户信息模态框 -->
+  <a-modal
+    v-model:visible="isEditModalVisible"
+    title="修改用户信息"
+    @ok="submitEdit"
+    @cancel="closeEditModal"
+  >
+    <a-form :model="editForm" layout="vertical">
+      <a-form-item label="用户名">
+        <a-input v-model="editForm.userName" placeholder="请输入用户名" />
+      </a-form-item>
+      <a-form-item field="appIcon" label="用户头像">
+        <PictureUploader
+          :value="editForm.userAvatar"
+          :onChange="(value) => (editForm.userAvatar = value)"
+          biz="user_avatar"
+        />
+      </a-form-item>
+      <a-form-item label="用户简介">
+        <a-input v-model="editForm.userProfile" placeholder="请输入用户简介" />
+      </a-form-item>
+      <a-form-item label="用户权限">
+        <a-input v-model="editForm.userRole" placeholder="请输入用户权限" />
+      </a-form-item>
+    </a-form>
+  </a-modal>
 </template>
 
 <script setup lang="ts">
@@ -58,12 +87,16 @@ import { ref, watchEffect } from "vue";
 import {
   deleteUserUsingPost,
   listUserByPageUsingPost,
+  updateUserUsingPost,
 } from "@/api/userController";
 import API from "@/api";
 import message from "@arco-design/web-vue/es/message";
 import { dayjs } from "@arco-design/web-vue/es/_utils/date";
+import PictureUploader from "@/components/PictureUploader.vue";
 
 const formSearchParams = ref<API.UserQueryRequest>({});
+const isEditModalVisible = ref(false);
+const editForm = ref<API.User>({});
 
 // 初始化搜索条件（不应该被修改）
 const initSearchParams = {
@@ -127,6 +160,36 @@ const doDelete = async (record: API.User) => {
     loadData();
   } else {
     message.error("删除失败，" + res.data.message);
+  }
+};
+
+/**
+ * 打开编辑模态框
+ * @param record
+ */
+const openEditModal = (record: API.User) => {
+  editForm.value = { ...record }; // 复制当前用户信息到编辑表单
+  isEditModalVisible.value = true; // 打开模态框
+};
+
+/**
+ * 关闭编辑模态框
+ */
+const closeEditModal = () => {
+  isEditModalVisible.value = false; // 关闭模态框
+};
+
+/**
+ * 提交编辑的用户信息
+ */
+const submitEdit = async () => {
+  const res = await updateUserUsingPost(editForm.value); // 调用更新接口
+  if (res.data.code === 0) {
+    message.success("用户信息更新成功");
+    closeEditModal(); // 关闭模态框
+    loadData(); // 重新加载数据
+  } else {
+    message.error("更新失败，" + res.data.message);
   }
 };
 
