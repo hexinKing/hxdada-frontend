@@ -49,7 +49,7 @@
     <template #optional="{ record }">
       <a-space>
         <a-button @click="openEditModal(record)">修改</a-button>
-        <a-button status="danger" @click="doDelete(record)">删除</a-button>
+        <a-button status="danger" @click="confirmDelete(record)">删除</a-button>
       </a-space>
     </template>
   </a-table>
@@ -80,6 +80,16 @@
       </a-form-item>
     </a-form>
   </a-modal>
+
+  <!-- 删除确认模态框 -->
+  <a-modal
+    v-model:visible="isDeleteModalVisible"
+    title="确认删除"
+    @ok="doDelete(currentDeleteRecord)"
+    @cancel="closeDeleteModal"
+  >
+    <p>您确定要删除该用户吗？</p>
+  </a-modal>
 </template>
 
 <script setup lang="ts">
@@ -96,7 +106,9 @@ import PictureUploader from "@/components/PictureUploader.vue";
 
 const formSearchParams = ref<API.UserQueryRequest>({});
 const isEditModalVisible = ref(false);
+const isDeleteModalVisible = ref(false);
 const editForm = ref<API.User>({});
+const currentDeleteRecord = ref<API.User | null>(null);
 
 // 初始化搜索条件（不应该被修改）
 const initSearchParams = {
@@ -145,6 +157,15 @@ const onPageChange = (page: number) => {
 };
 
 /**
+ * 删除确认
+ * @param record
+ */
+const confirmDelete = (record: API.User) => {
+  currentDeleteRecord.value = record;
+  isDeleteModalVisible.value = true; // 打开删除确认模态框
+};
+
+/**
  * 删除
  * @param record
  */
@@ -157,10 +178,19 @@ const doDelete = async (record: API.User) => {
     id: record.id,
   });
   if (res.data.code === 0) {
+    message.success("删除成功");
     loadData();
+    closeDeleteModal();
   } else {
     message.error("删除失败，" + res.data.message);
   }
+};
+
+/**
+ * 关闭删除模态框
+ */
+const closeDeleteModal = () => {
+  isDeleteModalVisible.value = false; // 关闭模态框
 };
 
 /**

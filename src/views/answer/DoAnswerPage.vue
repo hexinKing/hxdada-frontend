@@ -143,10 +143,35 @@ const loadData = async () => {
     sortField: "createTime",
     sortOrder: "descend",
   });
-  if (res.data.code === 0 && res.data.data?.records) {
-    questionContent.value = res.data.data.records[0].questionContent;
+  // if (res.data.code === 0 && res.data.data?.records) {
+  //   questionContent.value = res.data.data.records[0].questionContent;
+  // } else {
+  //   message.error("获取题目失败，" + res.data.message);
+  //   // 跳转到上一个页面
+  //   const appId = router.currentRoute.value.params.appId;
+  //   router.push(`/app/detail/${appId}`);
+  // }
+  if (
+    res.data.code === 0 &&
+    res.data.data?.records &&
+    res.data.data.records.length > 0
+  ) {
+    const fetchedQuestionContent = res.data.data.records[0]?.questionContent;
+
+    // 校验 questionContent 是否为 null
+    if (fetchedQuestionContent === null) {
+      message.warning("题目内容不能为空，返回上一个页面");
+      const appId = router.currentRoute.value.params.appId;
+      router.push(`/app/detail/${appId}`);
+    } else {
+      questionContent.value = fetchedQuestionContent;
+    }
   } else {
-    message.error("获取题目失败，" + res.data.message);
+    // message.error("获取题目失败，" + res.data.message);
+    message.error("题目内容为空，返回上一个页面，请创建题目");
+    // 跳转到上一个页面
+    const appId = router.currentRoute.value.params.appId;
+    router.push(`/app/detail/${appId}`);
   }
 };
 

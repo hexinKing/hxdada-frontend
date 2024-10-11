@@ -67,10 +67,14 @@
     </template>
     <template #optional="{ record }">
       <a-space>
-        <a-button status="danger" @click="doDelete(record)">删除</a-button>
+        <a-button status="danger" @click="confirmDelete(record)">删除</a-button>
       </a-space>
     </template>
   </a-table>
+
+  <a-modal v-model:visible="confirmVisible" title="确认删除" @ok="doDelete(currentRecord)" @cancel="confirmVisible = false">
+    <p>您确定要删除该项吗？</p>
+  </a-modal>
 </template>
 
 <script setup lang="ts">
@@ -97,6 +101,8 @@ const searchParams = ref<API.UserAnswerQueryRequest>({
 });
 const dataList = ref<API.UserAnswer[]>([]);
 const total = ref<number>(0);
+const confirmVisible = ref(false);
+const currentRecord = ref<API.UserAnswer | null>(null);
 
 /**
  * 加载数据
@@ -133,6 +139,15 @@ const onPageChange = (page: number) => {
 };
 
 /**
+ * 确认删除
+ * @param record
+ */
+const confirmDelete = (record: API.UserAnswer) => {
+  currentRecord.value = record;
+  confirmVisible.value = true;
+};
+
+/**
  * 删除
  * @param record
  */
@@ -145,6 +160,8 @@ const doDelete = async (record: API.UserAnswer) => {
     id: record.id,
   });
   if (res.data.code === 0) {
+    message.success("删除成功");
+    confirmVisible.value = false;
     loadData();
   } else {
     message.error("删除失败，" + res.data.message);

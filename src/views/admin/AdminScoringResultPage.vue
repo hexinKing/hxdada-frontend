@@ -61,10 +61,19 @@
     </template>
     <template #optional="{ record }">
       <a-space>
-        <a-button status="danger" @click="doDelete(record)">删除</a-button>
+        <a-button status="danger" @click="confirmDelete(record)">删除</a-button>
       </a-space>
     </template>
   </a-table>
+
+  <a-modal
+    v-model:visible="isModalVisible"
+    title="确认删除"
+    @ok="doDelete"
+    @cancel="isModalVisible = false"
+  >
+    <p>您确定要删除此条记录吗？</p>
+  </a-modal>
 </template>
 
 <script setup lang="ts">
@@ -78,6 +87,8 @@ import message from "@arco-design/web-vue/es/message";
 import { dayjs } from "@arco-design/web-vue/es/_utils/date";
 
 const formSearchParams = ref<API.ScoringResultQueryRequest>({});
+const isModalVisible = ref(false);
+const recordToDelete = ref<API.ScoringResult | null>(null);
 
 // 初始化搜索条件（不应该被修改）
 const initSearchParams = {
@@ -126,21 +137,30 @@ const onPageChange = (page: number) => {
 };
 
 /**
- * 删除
+ * 弹出确认删除的模态框
  * @param record
  */
-const doDelete = async (record: API.ScoringResult) => {
-  if (!record.id) {
-    return;
-  }
+const confirmDelete = (record: API.ScoringResult) => {
+  recordToDelete.value = record;
+  isModalVisible.value = true;
+};
 
-  const res = await deleteScoringResultUsingPost({
-    id: record.id,
-  });
-  if (res.data.code === 0) {
-    loadData();
-  } else {
-    message.error("删除失败，" + res.data.message);
+/**
+ * 删除
+ */
+const doDelete = async () => {
+  if (recordToDelete.value && recordToDelete.value.id) {
+    const res = await deleteScoringResultUsingPost({
+      id: recordToDelete.value.id,
+    });
+    if (res.data.code === 0) {
+      message.success("删除成功");
+      loadData();
+    } else {
+      message.error("删除失败，" + res.data.message);
+    }
+    isModalVisible.value = false;
+    recordToDelete.value = null;
   }
 };
 

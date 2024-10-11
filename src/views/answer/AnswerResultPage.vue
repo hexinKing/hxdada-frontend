@@ -31,8 +31,9 @@
           </p>
           <a-space size="medium">
             <a-button type="primary" :href="`/answer/do/${data.appId}`"
-              >去答题
+              >重新答题
             </a-button>
+            <a-button type="primary" :href="`/`">返回主页 </a-button>
           </a-space>
         </a-col>
         <a-col flex="320px">

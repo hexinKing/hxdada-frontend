@@ -465,7 +465,7 @@ declare namespace API {
 
   type QuestionEditRequest = {
     id?: number;
-    questionContentDTO?: QuestionContentDTO[];
+    questionContent?: QuestionContentDTO[];
   };
 
   type QuestionQueryRequest = {

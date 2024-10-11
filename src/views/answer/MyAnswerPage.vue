@@ -60,10 +60,20 @@
     </template>
     <template #optional="{ record }">
       <a-space>
-        <a-button status="danger" @click="doDelete(record)">删除</a-button>
+        <a-button status="danger" @click="showDeleteConfirm(record)">删除</a-button>
       </a-space>
     </template>
   </a-table>
+
+  <a-modal
+    v-model:visible="isConfirmVisible"
+    title="确认删除"
+    ok-text="确认"
+    cancel-text="取消"
+    @ok="confirmDelete"
+  >
+    <p>您确认要删除该项吗？</p>
+  </a-modal>
 </template>
 
 <script setup lang="ts">
@@ -78,18 +88,17 @@ import { dayjs } from "@arco-design/web-vue/es/_utils/date";
 import { APP_SCORING_STRATEGY_MAP, APP_TYPE_MAP } from "@/constant/app";
 
 const formSearchParams = ref<API.UserAnswerQueryRequest>({});
-
-// 初始化搜索条件（不应该被修改）
 const initSearchParams = {
   current: 1,
   pageSize: 10,
 };
-
 const searchParams = ref<API.UserAnswerQueryRequest>({
   ...initSearchParams,
 });
 const dataList = ref<API.UserAnswerVO[]>([]);
 const total = ref<number>(0);
+const isConfirmVisible = ref<boolean>(false);
+let recordToDelete = ref<API.UserAnswer | null>(null);
 
 /**
  * 加载数据
@@ -126,18 +135,30 @@ const onPageChange = (page: number) => {
 };
 
 /**
- * 删除
+ * 显示删除确认弹窗
  * @param record
  */
-const doDelete = async (record: API.UserAnswer) => {
-  if (!record.id) {
+const showDeleteConfirm = (record: API.UserAnswer) => {
+  recordToDelete.value = record;
+  isConfirmVisible.value = true;
+};
+
+/**
+ * 确认删除
+ */
+const confirmDelete = async () => {
+  if (!recordToDelete.value || !recordToDelete.value.id) {
+    isConfirmVisible.value = false;
     return;
   }
 
   const res = await deleteUserAnswerUsingPost({
-    id: record.id,
+    id: recordToDelete.value.id,
   });
+  isConfirmVisible.value = false;
+
   if (res.data.code === 0) {
+    message.success("删除成功");
     loadData();
   } else {
     message.error("删除失败，" + res.data.message);

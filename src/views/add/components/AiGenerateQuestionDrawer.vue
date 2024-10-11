@@ -130,7 +130,7 @@ const handleSSESubmit = async () => {
   if (!props.appId) {
     return;
   }
-  sseSubmitting.value = true;
+  sseSubmitting.value = true; // 设置为加载中
   // 创建 SSE 请求
   const eventSource = new EventSource(
     // todo 手动填写完整的后端地址
@@ -156,7 +156,7 @@ const handleSSESubmit = async () => {
     } else {
       eventSource.close();
     }
+    sseSubmitting.value = false; // 在连接关闭时改为非加载状态
   };
-  sseSubmitting.value = false;
 };
 </script>
