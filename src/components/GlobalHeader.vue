@@ -13,7 +13,7 @@
         >
           <div class="titleBar">
             <img class="logo" src="../assets/logo.png" />
-            <div class="title">HX答答</div>
+            <div class="title">智能答题应用平台</div>
           </div>
         </a-menu-item>
         <a-menu-item v-for="item in visibleRoutes" :key="item.path">
@@ -24,7 +24,9 @@
     <a-col flex="200px">
       <div v-if="loginUserStore.loginUser.id">
         {{ loginUserStore.loginUser.userName ?? "无名" }}
-        <a-button type="primary" href="/user/login" style="margin-left: 5px">退出登录</a-button>
+        <a-button type="primary" href="/user/login" style="margin-left: 5px"
+          >退出登录</a-button
+        >
       </div>
       <div v-else>
         <a-button type="primary" href="/user/login">登录</a-button>
@@ -67,7 +69,7 @@ const visibleRoutes = computed(() => {
 // 点击菜单跳转到对应页面
 const doMenuClick = (key: string) => {
   router.push({
-    path: key
+    path: key,
   });
 };
 </script>

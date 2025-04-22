@@ -37,11 +37,25 @@
     @page-change="onPageChange"
   >
     <template #questionContent="{ record }">
-      <div
-        v-for="question in JSON.parse(record.questionContent)"
-        :key="question.title"
-      >
-        {{ question }}
+      <div class="scrollable-questions">
+        <div
+          v-for="(question, index) in JSON.parse(record.questionContent)"
+          :key="index"
+          class="question-item"
+        >
+          <div class="question-title">{{ question.title }}</div>
+          <div class="options-container">
+            <div
+              v-for="option in question.options"
+              :key="option.key"
+              class="option-item"
+            >
+              <span class="option-key">{{ option.key }}.</span>
+              <span class="option-value">{{ option.value }}</span>
+              <span class="option-result">(结果: {{ option.result }})</span>
+            </div>
+          </div>
+        </div>
       </div>
     </template>
     <template #createTime="{ record }">
@@ -52,6 +66,7 @@
     </template>
     <template #optional="{ record }">
       <a-space>
+        <a-button type="primary" @click="handleEdit(record)">修改</a-button>
         <a-button status="danger" @click="confirmDelete(record)">删除</a-button>
       </a-space>
     </template>
@@ -76,6 +91,7 @@ import {
 import API from "@/api";
 import message from "@arco-design/web-vue/es/message";
 import { dayjs } from "@arco-design/web-vue/es/_utils/date";
+import router from "@/router";
 
 const formSearchParams = ref<API.QuestionQueryRequest>({});
 
@@ -135,6 +151,14 @@ const onPageChange = (page: number) => {
 const confirmDelete = (record: API.Question) => {
   confirmRecord.value = record;
   isConfirmVisible.value = true;
+};
+
+/**
+ * 处理编辑操作
+ * @param record 当前记录
+ */
+const handleEdit = (record: API.Question) => {
+  window.location.href = `http://localhost:8080/add/question/${record.appId}`;
 };
 
 /**
@@ -199,3 +223,42 @@ const columns = [
   },
 ];
 </script>
+
+<style scoped>
+.scrollable-questions {
+  max-height: 300px; /* 大约能显示3小题的高度 */
+  overflow-y: auto;
+  padding-right: 8px; /* 为滚动条留出空间 */
+}
+
+.question-item {
+  margin-bottom: 16px;
+}
+
+.question-title {
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+.options-container {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.option-item {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.option-key {
+  color: #165dff;
+  font-weight: bold;
+}
+
+.option-result {
+  color: #86909c;
+  font-size: 0.85em;
+}
+</style>

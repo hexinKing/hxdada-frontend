@@ -62,6 +62,7 @@
     </template>
     <template #optional="{ record }">
       <a-space>
+        <a-button type="primary" @click="handleEdit(record)">修改</a-button>
         <a-button
           v-if="record.reviewStatus !== REVIEW_STATUS_ENUM.PASS"
           status="success"
@@ -137,6 +138,14 @@ const loadData = async () => {
   } else {
     message.error("获取数据失败，" + res.data.message);
   }
+};
+
+/**
+ * 处理编辑操作
+ * @param record 当前记录
+ */
+const handleEdit = (record: API.App) => {
+  window.location.href = `http://localhost:8080/add/app/${record.id}`;
 };
 
 /**

@@ -7,11 +7,7 @@
       <a-layout-content class="content">
         <router-view />
       </a-layout-content>
-      <a-layout-footer class="footer">
-        <a href="https://github.com/hexinKing" target="_blank">
-          程序员矮蕉大王
-        </a>
-      </a-layout-footer>
+      <a-layout-footer class="footer"></a-layout-footer>
     </a-layout>
   </div>
 </template>
@@ -30,16 +26,16 @@ import GlobalHeader from "@/components/GlobalHeader.vue";
 }
 
 #basicLayout .content {
-  max-width: 1200px;
-  width: 100%;
   box-sizing: border-box;
+  width: 100%;
+  max-width: 1200px;
   margin: 0 auto 28px;
   padding: 20px;
-  background: linear-gradient(to right, #fefefe, #fff);
+  background: linear-gradient(to right, #f6f8f6, #e6f8e3);
 }
 
 .footer {
-  padding: 16px;
+  padding: 20px;
   text-align: center;
   background: #efefef;
 }

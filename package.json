@@ -12,6 +12,7 @@
     "@bytemd/plugin-gfm": "^1.21.0",
     "@bytemd/plugin-highlight": "^1.21.0",
     "@bytemd/vue-next": "^1.21.0",
+    "@vueuse/core": "^13.1.0",
     "axios": "^1.6.8",
     "core-js": "^3.8.3",
     "echarts": "^5.5.1",

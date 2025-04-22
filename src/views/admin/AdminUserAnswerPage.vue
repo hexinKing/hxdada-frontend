@@ -33,7 +33,7 @@
         allow-clear
       />
     </a-form-item>
-    <a-form-item>
+    <a-form-item :style="{ marginLeft: 'auto' }">
       <a-button type="primary" html-type="submit" style="width: 100px">
         搜索
       </a-button>
@@ -49,9 +49,20 @@
       total,
     }"
     @page-change="onPageChange"
+    :scroll="{ x: 1500 }"
   >
     <template #resultPicture="{ record }">
       <a-image width="64" :src="record.resultPicture" />
+    </template>
+    <template #choices="{ record }">
+      <div class="choices-cell">
+        {{ record.choices }}
+      </div>
+    </template>
+    <template #resultDesc="{ record }">
+      <div class="description-cell">
+        {{ record.resultDesc }}
+      </div>
     </template>
     <template #appType="{ record }">
       {{ APP_TYPE_MAP[record.appType] }}
@@ -72,7 +83,12 @@
     </template>
   </a-table>
 
-  <a-modal v-model:visible="confirmVisible" title="确认删除" @ok="doDelete(currentRecord)" @cancel="confirmVisible = false">
+  <a-modal
+    v-model:visible="confirmVisible"
+    title="确认删除"
+    @ok="doDelete(currentRecord)"
+    @cancel="confirmVisible = false"
+  >
     <p>您确定要删除该项吗？</p>
   </a-modal>
 </template>
@@ -93,7 +109,7 @@ const formSearchParams = ref<API.UserAnswerQueryRequest>({});
 // 初始化搜索条件（不应该被修改）
 const initSearchParams = {
   current: 1,
-  pageSize: 10,
+  pageSize: 5,
 };
 
 const searchParams = ref<API.UserAnswerQueryRequest>({
@@ -180,63 +196,110 @@ const columns = [
   {
     title: "id",
     dataIndex: "id",
+    width: 80,
   },
   {
     title: "选项",
     dataIndex: "choices",
+    slotName: "choices",
+    width: 200,
   },
   {
     title: "结果 id",
     dataIndex: "resultId",
+    width: 100,
   },
   {
     title: "名称",
     dataIndex: "resultName",
+    width: 150,
   },
   {
     title: "描述",
     dataIndex: "resultDesc",
+    slotName: "resultDesc",
+    width: 200,
   },
   {
     title: "图片",
     dataIndex: "resultPicture",
     slotName: "resultPicture",
+    width: 100,
   },
   {
     title: "得分",
     dataIndex: "resultScore",
+    width: 80,
   },
   {
     title: "应用 id",
     dataIndex: "appId",
+    width: 100,
   },
   {
     title: "应用类型",
     dataIndex: "appType",
     slotName: "appType",
+    width: 120,
   },
   {
     title: "评分策略",
     dataIndex: "scoringStrategy",
     slotName: "scoringStrategy",
+    width: 120,
   },
   {
     title: "用户 id",
     dataIndex: "userId",
+    width: 100,
   },
   {
     title: "创建时间",
     dataIndex: "createTime",
     slotName: "createTime",
+    width: 180,
   },
   {
     title: "更新时间",
     dataIndex: "updateTime",
     slotName: "updateTime",
+    width: 180,
   },
   {
     title: "操作",
     slotName: "optional",
+    width: 100,
+    fixed: "right",
   },
 ];
 </script>
+
+<style scoped>
+.choices-cell {
+  max-height: 100px;
+  overflow: hidden;
+  white-space: normal;
+  word-break: break-word;
+}
+
+.description-cell {
+  max-height: 100px;
+  padding-right: 8px;
+  overflow-y: auto;
+  white-space: normal;
+  word-break: break-word;
+}
+
+.description-cell::-webkit-scrollbar {
+  width: 6px;
+}
+
+.description-cell::-webkit-scrollbar-thumb {
+  background-color: #c1c1c1;
+  border-radius: 3px;
+}
+
+.description-cell::-webkit-scrollbar-track {
+  background-color: #f1f1f1;
+}
+</style>
